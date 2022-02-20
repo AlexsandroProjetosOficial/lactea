@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+    # api:
+    #     build: .
+    #     container_name: lactea
+    #     restart: always
+    #     ports:
+    #         - 3333:3333
+    #     volumes:
+    #         - .:/usr/app
+    #     links:
+    #         - database
+    #         - redis
+    #     depends_on:
+    #         - database
+    #         - redis
+
+    database:
+        image: postgres
+        container_name: database_lactea
+        restart: always
+        ports:
+            - 5433:5432
+        environment:
+            - POSTGRES_USER=docker
+            - POSTGRES_PASSWORD=lactea
+            - POSTGRES_DB=lactea
+        volumes:
+            - pgdata:/data/postgres
+
+    redis: 
+        container_name: database_redis 
+        image: bitnami/redis:latest 
+        volumes:  
+            - ./data/redis:/bitnami/redis/data 
+        ports: 
+            - ${REDIS_PORT}:${REDIS_PORT} 
+        environment: 
+            REDIS_PASSWORD: ${REDIS_PASSWORD} 
+            REDIS_REPLICATION_MODE: master 
+        expose:  
+            - ${REDIS_PORT} 
+        env_file: ./.env
+
+volumes:
+    pgdata:
+        driver: local
